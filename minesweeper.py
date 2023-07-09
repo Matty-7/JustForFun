@@ -1,20 +1,59 @@
 import random
 from colorama import Fore, Style
 
-# Ask the player for the size of the board
-rows = int(input("请输入棋盘的行数："))
-while rows <= 0:
-    print("输入无效，请输入一个非零自然数。")
-    rows = int(input("请输入棋盘的行数："))
+# Define the text for the game in both English and Chinese
+text = {
+    "en": {
+        "ask_rows": "Please enter the number of rows: ",
+        "invalid_input": "Invalid input, please enter a positive integer.",
+        "ask_cols": "Please enter the number of columns: ",
+        "num_mines": "There are {} mines in this game.",
+        "ask_action": "Choose an action (clear(c) or mark(m)): ",
+        "ask_move_row": "Enter the row of your move (1-{}): ",
+        "ask_move_col": "Enter the column of your move (1-{}): ",
+        "hit_mine": "Game over, you hit a mine!",
+        "safe": "Safe, continue the game!",
+        "mark": "Cell has been marked.",
+        "unmark": "Cell has been unmarked.",
+        "win": "Congratulations, you win!",
+        "remaining_mines": "There are {} mines in this game. {} mines have been marked, {} mines are still unmarked."
+    },
+    "zh": {
+        "ask_rows": "请输入棋盘的行数：",
+        "invalid_input": "输入无效，请输入一个非零自然数。",
+        "ask_cols": "请输入棋盘的列数：",
+        "num_mines": "本局有{}颗地雷。",
+        "ask_action": "请选择一个操作（清除(c)或者标记(m)）：",
+        "ask_move_row": "请输入你的移动行（1-{}）：",
+        "ask_move_col": "请输入你的移动列（1-{}）：",
+        "hit_mine": "游戏结束，你踩到了地雷！",
+        "safe": "安全，继续游戏！",
+        "mark": "格子已被标记。",
+        "unmark": "格子已被取消标记。",
+        "win": "恭喜你，你赢了！",
+        "remaining_mines": "本局有{}颗地雷。已标记了{}颗地雷，还有{}颗地雷未被标记。"
+    }
+}
 
-cols = int(input("请输入棋盘的列数："))
+# Ask the player for the language
+language = input("Please choose a language (English(en) or Chinese(zh)): ")
+while language not in ["en", "zh"]:
+    print("Invalid input, please enter 'en' for English or 'zh' for Chinese.")
+    language = input("Please choose a language (English(en) or Chinese(zh)): ")
+# Ask the player for the size of the board
+rows = int(input(text[language]["ask_rows"]))
+while rows <= 0:
+    print(text[language]["invalid_input"])
+    rows = int(input(text[language]["ask_rows"]))
+
+cols = int(input(text[language]["ask_cols"]))
 while cols <= 0:
-    print("输入无效，请输入一个非零自然数。")
-    cols = int(input("请输入棋盘的列数："))
+    print(text[language]["invalid_input"])
+    cols = int(input(text[language]["ask_cols"]))
 
 # Calculate the number of mines
 num_mines = random.randint(int(0.20 * rows * cols), int(0.25 * rows * cols))
-print("本局有%d颗地雷。" % num_mines)
+print(text[language]["num_mines"].format(num_mines))
 
 # Step 1: Initialize the game / minefield
 minefield = [[0 for _ in range(cols)] for _ in range(rows)]
