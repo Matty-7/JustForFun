@@ -1,4 +1,5 @@
 import random
+from colorama import Fore, Style
 
 # Ask the player for the size of the board
 rows = int(input("请输入棋盘的行数："))
@@ -33,10 +34,14 @@ game_over = False
 moves_made = 0
 while not game_over:
     # Show the player the current state of the field
-    print("  " + " ".join(str(i + 1) for i in range(cols)))  # column labels
+    print("  " + " ".join(Fore.RED + str(i + 1) + Style.RESET_ALL for i in range(cols)))  # column labels
     for i, row in enumerate(game_board):
-        print(str(i + 1) + " " + ' '.join(row))  # row labels
+        print(Fore.BLUE + str(i + 1) + Style.RESET_ALL + " " + ' '.join((Fore.YELLOW if cell == "M" else "") + cell + Style.RESET_ALL for cell in row))  # row labels
     
+    # Show the player the number of mines left
+    num_marked_mines = sum(cell == "M" for row in game_board for cell in row)
+    print("本局有%d颗地雷。已标记了%d颗地雷，还有%d颗地雷未被标记。" % (num_mines, num_marked_mines, num_mines - num_marked_mines))
+
     # Ask the player for a move
     action = input("请选择一个操作（清除(c)或者标记(m)）：")
     move_row = int(input("请输入你的移动行（1-%d）：" % rows)) - 1  # subtract 1 to convert to 0-indexing
@@ -87,6 +92,7 @@ while not game_over:
                         break
                 moves_made += 1
             print("安全，继续游戏！")
+            print("本局有%d颗地雷。" % num_mines)
     elif action.lower() == "m":
         if game_board[move_row][move_col] == "M":
             game_board[move_row][move_col] = "_"
