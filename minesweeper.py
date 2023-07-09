@@ -62,6 +62,12 @@ while not game_over:
             print("游戏结束，你踩到了地雷！")
         else:
             game_board[move_row][move_col] = str(numbers[move_row][move_col])
+            # If the cell has no adjacent mines, reveal all adjacent cells
+            if numbers[move_row][move_col] == 0:
+                for x in [-1, 0, 1]:
+                    for y in [-1, 0, 1]:
+                        if 0 <= move_row + x < rows and 0 <= move_col + y < cols and game_board[move_row + x][move_col + y] == "_":
+                            game_board[move_row + x][move_col + y] = str(numbers[move_row + x][move_col + y])
             if moves_made < 3:
                 # Randomly reveal 5-10 cells around the move
                 revealed_cells = 0
