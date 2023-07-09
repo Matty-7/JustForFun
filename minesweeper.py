@@ -22,6 +22,7 @@ game_board = [["_" for _ in range(10)] for _ in range(10)]
 
 # Step 2: Game loop
 game_over = False
+moves_made = 0
 while not game_over:
     # Show the player the current state of the field
     for row in game_board:
@@ -40,6 +41,20 @@ while not game_over:
             print("游戏结束，你踩到了地雷！")
         else:
             game_board[move_row][move_col] = str(numbers[move_row][move_col])
+            if moves_made < 3:
+                # Randomly reveal 5-10 cells around the move
+                revealed_cells = 0
+                max_revealed_cells = random.randint(5, 10)
+                for x in [-1, 0, 1]:
+                    for y in [-1, 0, 1]:
+                        if 0 <= move_row + x < 10 and 0 <= move_col + y < 10 and game_board[move_row + x][move_col + y] == "_":
+                            game_board[move_row + x][move_col + y] = str(numbers[move_row + x][move_col + y])
+                            revealed_cells += 1
+                            if revealed_cells == max_revealed_cells:
+                                break
+                    if revealed_cells == max_revealed_cells:
+                        break
+                moves_made += 1
             print("安全，继续游戏！")
     elif action.lower() == "m":
         game_board[move_row][move_col] = "M"
