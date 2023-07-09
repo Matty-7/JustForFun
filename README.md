@@ -1,11 +1,12 @@
 # JustForFun
+
 It's my playground that use GPT-4 code interpreter to generate some interesting codes!
 
-# Minesweeper Game
+## Minesweeper Game
 
 This is a Minesweeper game implemented in Python. The game can be played in a command-line interface.
 
-## Game Rules
+### Game Rules
 
 1. At the start of the game, the player is asked to enter the size of the game board (number of rows and columns).
 2. Each cell on the game board may hide a mine. The goal of the player is to reveal all cells that don't contain a mine, without revealing any cell that does contain a mine.
