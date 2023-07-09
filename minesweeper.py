@@ -11,6 +11,10 @@ while cols <= 0:
     print("输入无效，请输入一个非零自然数。")
     cols = int(input("请输入棋盘的列数："))
 
+# Calculate the number of mines
+num_mines = random.randint(int(0.20 * rows * cols), int(0.25 * rows * cols))
+print("本局有%d颗地雷。" % num_mines)
+
 # Step 1: Initialize the game / minefield
 minefield = [[0 for _ in range(cols)] for _ in range(rows)]
 # The game board that the player sees
@@ -35,7 +39,7 @@ while not game_over:
         # Make sure the first move is not a mine
         safe_cells = list(range(rows * cols))
         safe_cells.remove(cols * move_row + move_col)
-        mines = random.sample(safe_cells, 20)
+        mines = random.sample(safe_cells, num_mines)
         for mine in mines:
             row = mine // cols
             col = mine % cols
