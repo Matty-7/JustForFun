@@ -1,41 +1,53 @@
 import random
 
+# Ask the player for the size of the board
+rows = int(input("请输入棋盘的行数："))
+while rows <= 0:
+    print("输入无效，请输入一个非零自然数。")
+    rows = int(input("请输入棋盘的行数："))
+
+cols = int(input("请输入棋盘的列数："))
+while cols <= 0:
+    print("输入无效，请输入一个非零自然数。")
+    cols = int(input("请输入棋盘的列数："))
+
 # Step 1: Initialize the game / minefield
-minefield = [[0 for _ in range(10)] for _ in range(10)]
+minefield = [[0 for _ in range(cols)] for _ in range(rows)]
 # The game board that the player sees
-game_board = [["_" for _ in range(10)] for _ in range(10)]
+game_board = [["_" for _ in range(cols)] for _ in range(rows)]
 
 # Step 2: Game loop
 game_over = False
 moves_made = 0
 while not game_over:
     # Show the player the current state of the field
-    for row in game_board:
-        print(' '.join(row))
+    print("  " + " ".join(str(i + 1) for i in range(cols)))  # column labels
+    for i, row in enumerate(game_board):
+        print(str(i + 1) + " " + ' '.join(row))  # row labels
     
     # Ask the player for a move
     action = input("请选择一个操作（清除(c)或者标记(m)）：")
-    move_row = int(input("请输入你的移动行（1-10）：")) - 1  # subtract 1 to convert to 0-indexing
-    move_col = int(input("请输入你的移动列（1-10）：")) - 1  # subtract 1 to convert to 0-indexing
+    move_row = int(input("请输入你的移动行（1-%d）：" % rows)) - 1  # subtract 1 to convert to 0-indexing
+    move_col = int(input("请输入你的移动列（1-%d）：" % cols)) - 1  # subtract 1 to convert to 0-indexing
     
     # Place the mines after the first move
     if moves_made == 0 and action.lower() == "c":
         # Make sure the first move is not a mine
-        safe_cells = list(range(100))
-        safe_cells.remove(10 * move_row + move_col)
+        safe_cells = list(range(rows * cols))
+        safe_cells.remove(cols * move_row + move_col)
         mines = random.sample(safe_cells, 20)
         for mine in mines:
-            row = mine // 10
-            col = mine % 10
+            row = mine // cols
+            col = mine % cols
             minefield[row][col] = 1
 
     # Calculate the numbers that represent the number of mines around a cell
-    numbers = [[0 for _ in range(10)] for _ in range(10)]
-    for i in range(10):
-        for j in range(10):
+    numbers = [[0 for _ in range(cols)] for _ in range(rows)]
+    for i in range(rows):
+        for j in range(cols):
             for x in [-1, 0, 1]:
                 for y in [-1, 0, 1]:
-                    if 0 <= i + x < 10 and 0 <= j + y < 10 and minefield[i + x][j + y] == 1:
+                    if 0 <= i + x < rows and 0 <= j + y < cols and minefield[i + x][j + y] == 1:
                         numbers[i][j] += 1
 
     # Perform the chosen action
@@ -52,7 +64,7 @@ while not game_over:
                 max_revealed_cells = random.randint(5, 10)
                 for x in [-1, 0, 1]:
                     for y in [-1, 0, 1]:
-                        if 0 <= move_row + x < 10 and 0 <= move_col + y < 10 and game_board[move_row + x][move_col + y] == "_":
+                        if 0 <= move_row + x < rows and 0 <= move_col + y < cols and game_board[move_row + x][move_col + y] == "_":
                             game_board[move_row + x][move_col + y] = str(numbers[move_row + x][move_col + y])
                             revealed_cells += 1
                             if revealed_cells == max_revealed_cells:
