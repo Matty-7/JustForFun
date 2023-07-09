@@ -79,7 +79,7 @@ while not game_over:
     
     # Show the player the number of mines left
     num_marked_mines = sum(cell == "M" for row in game_board for cell in row)
-    print("本局有%d颗地雷。已标记了%d颗地雷，还有%d颗地雷未被标记。" % (num_mines, num_marked_mines, num_mines - num_marked_mines))
+    print(text[language]["remaining_mines"].format(num_mines, num_marked_mines, num_mines - num_marked_mines))
 
     # Ask the player for a move
     action = input("请选择一个操作（清除(c)或者标记(m)）：")
@@ -111,7 +111,7 @@ while not game_over:
         # Check if the move is on a mine
         if minefield[move_row][move_col] == 1:
             game_over = True
-            print("游戏结束，你踩到了地雷！")
+            print(text[language]["hit_mine"])
         else:
             game_board[move_row][move_col] = str(numbers[move_row][move_col])
             if numbers[move_row][move_col] == 0:
@@ -135,10 +135,10 @@ while not game_over:
     elif action.lower() == "m":
         if game_board[move_row][move_col] == "M":
             game_board[move_row][move_col] = "_"
-            print("格子已被取消标记。")
+            print(text[language]["unmark"])
         else:
             game_board[move_row][move_col] = "M"
-            print("格子已被标记。")
+            print(text[language]["mark"])
 
     # Check if the player has won
     if all(all(cell != "_" for cell in row) for row in game_board):
