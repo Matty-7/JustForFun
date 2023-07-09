@@ -14,6 +14,6 @@ This is a Minesweeper game implemented in Python. The game can be played in a co
 4. If the player reveals a cell that contains a mine, the game ends immediately. If the player reveals all cells that don't contain a mine, they win the game.
 5. After each round, the system will display the number of remaining mines, the number of marked mines, and how many mines have not been marked.
 
-## How to Run
+### How to Run
 
 In your terminal, run `python minesweeper.py`.
