@@ -83,8 +83,8 @@ while not game_over:
 
     # Ask the player for a move
     action = input(text[language]["ask_action"])
-    move_row = int(input(text[language]["ask_move_row"] % rows)) - 1  # subtract 1 to convert to 0-indexing
-    move_col = int(input(text[language]["ask_move_col"] % cols)) - 1  # subtract 1 to convert to 0-indexing
+    move_row = int(input(text[language]["ask_move_row"].format(rows))) - 1  # subtract 1 to convert to 0-indexing
+    move_col = int(input(text[language]["ask_move_col"].format(cols))) - 1  # subtract 1 to convert to 0-indexing
     
     # Place the mines after the first move
     if moves_made == 0 and action.lower() == "c":
