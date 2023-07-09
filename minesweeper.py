@@ -23,7 +23,7 @@ game_board = [["_" for _ in range(cols)] for _ in range(rows)]
 def reveal_adjacent_cells(row, col):
     for x in [-1, 0, 1]:
         for y in [-1, 0, 1]:
-            if 0 <= row + x < rows and 0 <= col + y < cols and game_board[row + x][col + y] == "_":
+            if 0 <= row + x < rows and 0 <= col + y < cols and game_board[row + x][col + y] == "_" and minefield[row + x][col + y] == 0:
                 game_board[row + x][col + y] = str(numbers[row + x][col + y])
                 if numbers[row + x][col + y] == 0:
                     reveal_adjacent_cells(row + x, col + y)
@@ -63,7 +63,6 @@ while not game_over:
                         numbers[i][j] += 1
 
     # Perform the chosen action
-    
     if action.lower() == "c":
         # Check if the move is on a mine
         if minefield[move_row][move_col] == 1:
@@ -88,10 +87,13 @@ while not game_over:
                         break
                 moves_made += 1
             print("安全，继续游戏！")
-
     elif action.lower() == "m":
-        game_board[move_row][move_col] = "M"
-        print("格子已被标记。")
+        if game_board[move_row][move_col] == "M":
+            game_board[move_row][move_col] = "_"
+            print("格子已被取消标记。")
+        else:
+            game_board[move_row][move_col] = "M"
+            print("格子已被标记。")
 
     # Check if the player has won
     if all(all(cell != "_" for cell in row) for row in game_board):
