@@ -20,6 +20,14 @@ minefield = [[0 for _ in range(cols)] for _ in range(rows)]
 # The game board that the player sees
 game_board = [["_" for _ in range(cols)] for _ in range(rows)]
 
+def reveal_adjacent_cells(row, col):
+    for x in [-1, 0, 1]:
+        for y in [-1, 0, 1]:
+            if 0 <= row + x < rows and 0 <= col + y < cols and game_board[row + x][col + y] == "_":
+                game_board[row + x][col + y] = str(numbers[row + x][col + y])
+                if numbers[row + x][col + y] == 0:
+                    reveal_adjacent_cells(row + x, col + y)
+
 # Step 2: Game loop
 game_over = False
 moves_made = 0
@@ -62,12 +70,8 @@ while not game_over:
             print("游戏结束，你踩到了地雷！")
         else:
             game_board[move_row][move_col] = str(numbers[move_row][move_col])
-            # If the cell has no adjacent mines, reveal all adjacent cells
             if numbers[move_row][move_col] == 0:
-                for x in [-1, 0, 1]:
-                    for y in [-1, 0, 1]:
-                        if 0 <= move_row + x < rows and 0 <= move_col + y < cols and game_board[move_row + x][move_col + y] == "_":
-                            game_board[move_row + x][move_col + y] = str(numbers[move_row + x][move_col + y])
+                reveal_adjacent_cells(move_row, move_col)
             if moves_made < 3:
                 # Randomly reveal 5-10 cells around the move
                 revealed_cells = 0
