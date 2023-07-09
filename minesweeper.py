@@ -82,9 +82,9 @@ while not game_over:
     print(text[language]["remaining_mines"].format(num_mines, num_marked_mines, num_mines - num_marked_mines))
 
     # Ask the player for a move
-    action = input("请选择一个操作（清除(c)或者标记(m)）：")
-    move_row = int(input("请输入你的移动行（1-%d）：" % rows)) - 1  # subtract 1 to convert to 0-indexing
-    move_col = int(input("请输入你的移动列（1-%d）：" % cols)) - 1  # subtract 1 to convert to 0-indexing
+    action = input(text[language]["ask_action"])
+    move_row = int(input(text[language]["ask_move_row"] % rows)) - 1  # subtract 1 to convert to 0-indexing
+    move_col = int(input(text[language]["ask_move_col"] % cols)) - 1  # subtract 1 to convert to 0-indexing
     
     # Place the mines after the first move
     if moves_made == 0 and action.lower() == "c":
@@ -130,8 +130,9 @@ while not game_over:
                     if revealed_cells == max_revealed_cells:
                         break
                 moves_made += 1
-            print("安全，继续游戏！")
-            print("本局有%d颗地雷。" % num_mines)
+            print(text[language]["safe"])
+            print(text[language]["num_mines"].format(num_mines))
+
     elif action.lower() == "m":
         if game_board[move_row][move_col] == "M":
             game_board[move_row][move_col] = "_"
@@ -143,4 +144,4 @@ while not game_over:
     # Check if the player has won
     if all(all(cell != "_" for cell in row) for row in game_board):
         game_over = True
-        print("恭喜你，你赢了！")
+        print(text[language]["win"])
