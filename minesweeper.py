@@ -63,6 +63,7 @@ while not game_over:
                         numbers[i][j] += 1
 
     # Perform the chosen action
+    
     if action.lower() == "c":
         # Check if the move is on a mine
         if minefield[move_row][move_col] == 1:
@@ -78,7 +79,7 @@ while not game_over:
                 max_revealed_cells = random.randint(5, 10)
                 for x in [-1, 0, 1]:
                     for y in [-1, 0, 1]:
-                        if 0 <= move_row + x < rows and 0 <= move_col + y < cols and game_board[move_row + x][move_col + y] == "_":
+                        if 0 <= move_row + x < rows and 0 <= move_col + y < cols and game_board[move_row + x][move_col + y] == "_" and minefield[move_row + x][move_col + y] == 0:
                             game_board[move_row + x][move_col + y] = str(numbers[move_row + x][move_col + y])
                             revealed_cells += 1
                             if revealed_cells == max_revealed_cells:
@@ -87,6 +88,7 @@ while not game_over:
                         break
                 moves_made += 1
             print("安全，继续游戏！")
+
     elif action.lower() == "m":
         game_board[move_row][move_col] = "M"
         print("格子已被标记。")
