@@ -29,14 +29,14 @@ while not game_over:
             col = mine % 10
             minefield[row][col] = 1
 
-        # Calculate the numbers that represent the number of mines around a cell
-        numbers = [[0 for _ in range(10)] for _ in range(10)]
-        for i in range(10):
-            for j in range(10):
-                for x in [-1, 0, 1]:
-                    for y in [-1, 0, 1]:
-                        if 0 <= i + x < 10 and 0 <= j + y < 10 and minefield[i + x][j + y] == 1:
-                            numbers[i][j] += 1
+    # Calculate the numbers that represent the number of mines around a cell
+    numbers = [[0 for _ in range(10)] for _ in range(10)]
+    for i in range(10):
+        for j in range(10):
+            for x in [-1, 0, 1]:
+                for y in [-1, 0, 1]:
+                    if 0 <= i + x < 10 and 0 <= j + y < 10 and minefield[i + x][j + y] == 1:
+                        numbers[i][j] += 1
 
     # Perform the chosen action
     if action.lower() == "c":
