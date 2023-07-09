@@ -4,6 +4,9 @@ import tkinter as tk
 window = tk.Tk()
 window.title("Minesweeper")
 
+cols = 5
+rows = 5
+
 # Create a button for each cell
 buttons = [[None for _ in range(cols)] for _ in range(rows)]
 for i in range(rows):
