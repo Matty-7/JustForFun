@@ -1,11 +1,18 @@
 import tkinter as tk
+import random
 
 # Create the main window
 window = tk.Tk()
 window.title("Minesweeper")
 
-cols = 5
-rows = 5
+cols = 10
+rows = 10
+num_mines = int(0.2 * rows * cols)
+
+# Create the minefield and the numbers that represent the number of mines around a cell
+minefield = [[0 for _ in range(cols)] for _ in range(rows)]
+numbers = [[0 for _ in range(cols)] for _ in range(rows)]
+first_click = True
 
 # Variable to keep track of whether the 'm' key is pressed
 mark_mode = tk.BooleanVar(window, False)
@@ -29,6 +36,27 @@ for i in range(rows):
 
 # Function to handle clear action
 def clear(row, col):
+    global first_click
+    if first_click:
+        # Place the mines after the first move
+        first_click = False
+        # Make sure the first move is not a mine
+        safe_cells = list(range(rows * cols))
+        safe_cells.remove(cols * row + col)
+        mines = random.sample(safe_cells, num_mines)
+        for mine in mines:
+            mine_row = mine // cols
+            mine_col = mine % cols
+            minefield[mine_row][mine_col] = 1
+
+        # Calculate the numbers that represent the number of mines around a cell
+        for i in range(rows):
+            for j in range(cols):
+                for x in [-1, 0, 1]:
+                    for y in [-1, 0, 1]:
+                        if 0 <= i + x < rows and 0 <= j + y < cols and minefield[i + x][j + y] == 1:
+                            numbers[i][j] += 1
+
     print("Clear cell at", row, col)
 
 # Function to handle mark action
