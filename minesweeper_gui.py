@@ -14,6 +14,9 @@ cols = simpledialog.askinteger("Input", "Please enter the number of columns: ", 
 # Calculate the number of mines
 num_mines = random.randint(int(0.20 * rows * cols), int(0.25 * rows * cols))
 
+# Variable to keep track of the number of marked mines
+num_marked_mines = 0
+
 # Initialize the minefield and the numbers matrix
 minefield = [[0 for _ in range(cols)] for _ in range(rows)]
 numbers = [[0 for _ in range(cols)] for _ in range(rows)]
@@ -22,6 +25,19 @@ first_click = True
 
 # Variable to keep track of whether the 'm' key is pressed
 mark_mode = tk.BooleanVar(window, False)
+
+# Create a label to display the current mode
+mode_label = tk.Label(window, text="Mode: Clear")
+mode_label.grid(row=0, column=0, columnspan=cols)
+
+# Create a label to display the number of marked mines and remaining mines
+mines_label = tk.Label(window)
+mines_label.grid(row=0, column=0, columnspan=cols)
+
+def update_mines_label():
+    mines_label["text"] = f"Mines marked: {num_marked_mines} / Remaining: {num_mines - num_marked_mines}"
+
+update_mines_label()
 
 def check_game_over():
     for i in range(rows):
@@ -40,6 +56,7 @@ def check_game_over():
 # Function to handle key press and release events
 def toggle_mark_mode(event):
     mark_mode.set(not mark_mode.get())
+    mode_label["text"] = "Mode: Mark" if mark_mode.get() else "Mode: Clear"
 
 window.bind('m', toggle_mark_mode)
 
@@ -48,7 +65,7 @@ buttons = [[None for _ in range(cols)] for _ in range(rows)]
 for i in range(rows):
     for j in range(cols):
         button = tk.Button(window, text="_", width=2)
-        button.grid(row=i, column=j)
+        button.grid(row=i + 1, column=j) # Add 1 to the row index to make room for the mode label
         buttons[i][j] = button
 
         # Bind the left mouse button click to the clear or mark action, depending on the mark_mode variable
@@ -69,6 +86,8 @@ def update_button(row, col):
         button.config(text=str(numbers[row][col]), bg="white", fg=colors[numbers[row][col]])
     else:  # empty cell
         button.config(text="", bg="white")
+
+
 
 # Function to handle clear action
 def clear(row, col):
@@ -110,7 +129,15 @@ def clear(row, col):
 
 # Function to handle mark action
 def mark(row, col):
-    update_button(row, col)
+    global num_marked_mines
+    button = buttons[row][col]
+    if button["text"] == "M":  # if the cell is already marked, unmark it
+        button.config(text="_", bg="light grey")
+        num_marked_mines -= 1
+    else:  # mark the cell
+        button.config(text="M", bg="red")
+        num_marked_mines += 1
+    update_mines_label()
     check_game_over()
 
 # Start the main event loop
