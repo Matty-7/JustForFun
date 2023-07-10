@@ -64,10 +64,21 @@ def clear(row, col):
                             numbers[i][j] += 1
 
     print("Clear cell at", row, col)
+    update_button(row, col)
 
 # Function to handle mark action
 def mark(row, col):
     print("Mark cell at", row, col)
+    update_button(row, col)
+
+def update_button(row, col):
+    button = buttons[row][col]
+    if minefield[row][col] == 1:  # mine
+        button.config(text="M", bg="red")
+    elif numbers[row][col] > 0:  # number
+        button.config(text=str(numbers[row][col]), bg="white")
+    else:  # empty cell
+        button.config(text="", bg="white")
 
 # Start the main event loop
 window.mainloop()
