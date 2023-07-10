@@ -1,5 +1,6 @@
 import tkinter as tk
 import random
+from tkinter import messagebox
 
 # Create the main window
 window = tk.Tk()
@@ -16,6 +17,21 @@ first_click = True
 
 # Variable to keep track of whether the 'm' key is pressed
 mark_mode = tk.BooleanVar(window, False)
+
+def check_game_over():
+    for i in range(rows):
+        for j in range(cols):
+            button_text = buttons[i][j]["text"]
+            if minefield[i][j] == 1:  # mine
+                if button_text != "M":  # not marked
+                    return
+            else:  # not mine
+                if button_text == "_" or button_text == "M":  # not cleared or wrongly marked
+                    return
+    # If we reach here, the player has won
+    messagebox.showinfo("Congratulations", "You win!")
+    window.quit()
+
 
 # Function to handle key press and release events
 def toggle_mark_mode(event):
@@ -63,6 +79,12 @@ def clear(row, col):
                         if 0 <= i + x < rows and 0 <= j + y < cols and minefield[i + x][j + y] == 1:
                             numbers[i][j] += 1
 
+    # Check if the move is on a mine
+    if minefield[row][col] == 1:
+        messagebox.showinfo("Game over", "You hit a mine!")
+        window.quit()
+        return
+
     update_button(row, col)
     if numbers[row][col] == 0:
         for x in [-1, 0, 1]:
@@ -70,9 +92,13 @@ def clear(row, col):
                 if 0 <= row + x < rows and 0 <= col + y < cols and buttons[row + x][col + y]["text"] == "_":
                     clear(row + x, col + y)
 
+    check_game_over()
+
+
 # Function to handle mark action
 def mark(row, col):
     update_button(row, col)
+    check_game_over()
 
 def update_button(row, col):
     button = buttons[row][col]
