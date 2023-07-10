@@ -1,18 +1,23 @@
 import tkinter as tk
 import random
 from tkinter import messagebox
+from tkinter import simpledialog
 
 # Create the main window
 window = tk.Tk()
 window.title("Minesweeper")
 
-cols = 10
-rows = 10
-num_mines = int(0.2 * rows * cols)
+# Ask the player for the size of the board
+rows = simpledialog.askinteger("Input", "Please enter the number of rows: ", minvalue=1, maxvalue=100)
+cols = simpledialog.askinteger("Input", "Please enter the number of columns: ", minvalue=1, maxvalue=100)
 
-# Create the minefield and the numbers that represent the number of mines around a cell
+# Calculate the number of mines
+num_mines = random.randint(int(0.20 * rows * cols), int(0.25 * rows * cols))
+
+# Initialize the minefield and the numbers matrix
 minefield = [[0 for _ in range(cols)] for _ in range(rows)]
 numbers = [[0 for _ in range(cols)] for _ in range(rows)]
+
 first_click = True
 
 # Variable to keep track of whether the 'm' key is pressed
@@ -43,8 +48,8 @@ window.bind('m', toggle_mark_mode)
 buttons = [[None for _ in range(cols)] for _ in range(rows)]
 for i in range(rows):
     for j in range(cols):
-        button = tk.Button(window, text="_")
-        button.grid(row=i, column=j, sticky='nsew')  # The 'nsew' option makes the button expand to fill the grid cell
+        button = tk.Button(window, text="_", width=2)
+        button.grid(row=i, column=j)
         buttons[i][j] = button
 
         # Bind the left mouse button click to the clear or mark action, depending on the mark_mode variable
