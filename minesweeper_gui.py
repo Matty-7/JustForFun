@@ -74,7 +74,6 @@ def clear(row, col):
         first_click = False
         # Make sure the first move is not a mine
         safe_cells = [(x, y) for x in range(rows) for y in range(cols) if (x, y) != (row, col)]
-
         mines = random.sample(safe_cells, num_mines)
         for (x, y) in mines:
             minefield[x][y] = 1
@@ -88,17 +87,21 @@ def clear(row, col):
                             numbers[i][j] += 1
 
         # Randomly reveal 3-8 cells around the first click
-        revealed_cells = 0
+        revealed_cells = []
         max_revealed_cells = random.randint(3, 8)
         for dx in [-1, 0, 1]:
             for dy in [-1, 0, 1]:
                 if 0 <= row + dx < rows and 0 <= col + dy < cols and (buttons[row + dx][col + dy]["text"] == "_"):
-                    clear(row + dx, col + dy)
-                    revealed_cells += 1
-                    if revealed_cells == max_revealed_cells:
+                    revealed_cells.append((row + dx, col + dy))
+                    if len(revealed_cells) == max_revealed_cells:
                         break
-            if revealed_cells == max_revealed_cells:
+            if len(revealed_cells) == max_revealed_cells:
                 break
+
+        # Clear the collected cells
+        for (x, y) in revealed_cells:
+            clear(x, y)
+
 
     # Check if the move is on a mine
     if minefield[row][col] == 1:
