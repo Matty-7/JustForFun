@@ -13,8 +13,22 @@ window.title("Minesweeper")
 rows = simpledialog.askinteger("Input", "Please enter the number of rows: ", minvalue=1, maxvalue=100)
 cols = simpledialog.askinteger("Input", "Please enter the number of columns: ", minvalue=1, maxvalue=100)
 
+# Ask the player for the difficulty
+difficulty = simpledialog.askstring("Input", "Please enter the difficulty (easy, medium, hard): ")
+
+# Validate the difficulty
+if difficulty not in ["easy", "medium", "hard"]:
+    messagebox.showerror("Error", "Invalid difficulty")
+    window.quit()
+    exit()
+
 # Calculate the number of mines
-num_mines = random.randint(int(0.20 * rows * cols), int(0.25 * rows * cols))
+if difficulty == "easy":
+    num_mines = random.randint(int(0.15 * rows * cols), int(0.20 * rows * cols))
+elif difficulty == "medium":
+    num_mines = random.randint(int(0.20 * rows * cols), int(0.25 * rows * cols))
+else:  # hard
+    num_mines = random.randint(int(0.25 * rows * cols), int(0.30 * rows * cols))
 
 # Variable to keep track of the number of marked mines
 num_marked_mines = 0
