@@ -73,7 +73,8 @@ def clear(row, col):
         # Place the mines after the first move
         first_click = False
         # Make sure the first move is not a mine
-        safe_cells = [(x, y) for x in range(rows) for y in range(cols) if (x, y) != (i, j)]
+        safe_cells = [(x, y) for x in range(rows) for y in range(cols) if (x, y) != (row, col)]
+
         mines = random.sample(safe_cells, num_mines)
         for (x, y) in mines:
             minefield[x][y] = 1
