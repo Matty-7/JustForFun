@@ -63,12 +63,10 @@ def clear(row, col):
                         if 0 <= i + x < rows and 0 <= j + y < cols and minefield[i + x][j + y] == 1:
                             numbers[i][j] += 1
 
-    print("Clear cell at", row, col)
     update_button(row, col)
 
 # Function to handle mark action
 def mark(row, col):
-    print("Mark cell at", row, col)
     update_button(row, col)
 
 def update_button(row, col):
