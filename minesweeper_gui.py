@@ -13,12 +13,6 @@ cols = simpledialog.askinteger("Input", "Please enter the number of columns: ", 
 
 # Calculate the number of mines
 num_mines = random.randint(int(0.20 * rows * cols), int(0.25 * rows * cols))
-num_marked_mines = 0
-
-# Create a label to display the game status
-status_label = tk.Label(window, text=f"Rows: {rows}, Columns: {cols}, Mines: {num_mines}, Unmarked: {num_mines}")
-status_label.grid(row=0, column=0, columnspan=cols)
-
 
 # Initialize the minefield and the numbers matrix
 minefield = [[0 for _ in range(cols)] for _ in range(rows)]
@@ -28,10 +22,6 @@ first_click = True
 
 # Variable to keep track of whether the 'm' key is pressed
 mark_mode = tk.BooleanVar(window, False)
-
-# Function to update the status label
-def update_status():
-    status_label["text"] = f"Rows: {rows}, Columns: {cols}, Mines: {num_mines}, Unmarked: {num_mines - num_marked_mines}"
 
 def check_game_over():
     for i in range(rows):
@@ -46,8 +36,6 @@ def check_game_over():
     # If we reach here, the player has won
     messagebox.showinfo("Congratulations", "You win!")
     window.quit()
-    update_status()
-
 
 # Function to handle key press and release events
 def toggle_mark_mode(event):
@@ -57,17 +45,30 @@ window.bind('m', toggle_mark_mode)
 
 # Create a button for each cell
 buttons = [[None for _ in range(cols)] for _ in range(rows)]
-for i in range(1, rows + 1):  # Shift the rows down by 1 to make space for the status label
+for i in range(rows):
     for j in range(cols):
         button = tk.Button(window, text="_", width=2)
         button.grid(row=i, column=j)
-        buttons[i - 1][j] = button  # Subtract 1 from i because buttons uses 0-indexing
+        buttons[i][j] = button
+
+        # Bind the left mouse button click to the clear or mark action, depending on the mark_mode variable
+        button.bind("<Button-1>", lambda event, row=i, col=j: mark(row, col) if mark_mode.get() else clear(row, col))
 
 # Configure the rows and columns to expand proportionally with the window size
 for i in range(rows):
     window.grid_rowconfigure(i, weight=1)
 for j in range(cols):
     window.grid_columnconfigure(j, weight=1)
+
+def update_button(row, col):
+    button = buttons[row][col]
+    colors = ["", "blue", "green", "red", "purple", "maroon", "turquoise", "black", "gray"]
+    if minefield[row][col] == 1:  # mine
+        button.config(text="M", bg="red")
+    elif numbers[row][col] > 0:  # number
+        button.config(text=str(numbers[row][col]), bg="white", fg=colors[numbers[row][col]])
+    else:  # empty cell
+        button.config(text="", bg="white")
 
 # Function to handle clear action
 def clear(row, col):
@@ -107,21 +108,10 @@ def clear(row, col):
 
     check_game_over()
 
-
 # Function to handle mark action
 def mark(row, col):
     update_button(row, col)
     check_game_over()
-
-def update_button(row, col):
-    button = buttons[row][col]
-    if minefield[row][col] == 1:  # mine
-        button.config(text="M", bg="red")
-    elif numbers[row][col] > 0:  # number
-        button.config(text=str(numbers[row][col]), bg="white")
-    else:  # empty cell
-        button.config(text="", bg="white")
-    update_status()
 
 # Start the main event loop
 window.mainloop()
