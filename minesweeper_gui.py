@@ -1,3 +1,5 @@
+# The code will be modified based on the provided file.
+
 import tkinter as tk
 import random
 from tkinter import messagebox
@@ -26,17 +28,25 @@ first_click = True
 # Variable to keep track of whether the 'm' key is pressed
 mark_mode = tk.BooleanVar(window, False)
 
-# Create a label to display the current mode
-mode_label = tk.Label(window, text="Mode: Clear")
-mode_label.grid(row=0, column=0, columnspan=cols)
+# Create a label frame for displaying game status information
+status_frame = tk.Frame(window)
+status_frame.grid(row=0, column=0, columnspan=cols)
 
-# Create a label to display the number of marked mines and remaining mines
-mines_label = tk.Label(window)
-mines_label.grid(row=0, column=0, columnspan=cols)
+# Create a label to display the current mode and add it to the status frame
+mode_label = tk.Label(status_frame, text="Mode: Clear")
+mode_label.pack(side='left')
+
+# Create a label to display the number of marked mines and remaining mines, and add it to the status frame
+mines_label = tk.Label(status_frame)
+mines_label.pack(side='left')
+
+def update_mode_label():
+    mode_label["text"] = "Mode: Mark" if mark_mode.get() else "Mode: Clear"
 
 def update_mines_label():
     mines_label["text"] = f"Mines marked: {num_marked_mines} / Remaining: {num_mines - num_marked_mines}"
 
+update_mode_label()
 update_mines_label()
 
 def check_game_over():
@@ -56,23 +66,34 @@ def check_game_over():
 # Function to handle key press and release events
 def toggle_mark_mode(event):
     mark_mode.set(not mark_mode.get())
-    mode_label["text"] = "Mode: Mark" if mark_mode.get() else "Mode: Clear"
+    update_mode_label()
 
 window.bind('m', toggle_mark_mode)
+
+# Create a new frame for the labels
+label_frame = tk.Frame(window)
+label_frame.grid(row=0, column=0, sticky='ew')
+
+# Move the labels into the new frame
+mode_label.master = label_frame
+mines_label.master = label_frame
+
+mode_label.pack(side='left')
+mines_label.pack(side='left')
 
 # Create a button for each cell
 buttons = [[None for _ in range(cols)] for _ in range(rows)]
 for i in range(rows):
     for j in range(cols):
         button = tk.Button(window, text="_", width=2)
-        button.grid(row=i + 1, column=j) # Add 1 to the row index to make room for the mode label
+        button.grid(row=i+1, column=j)  # Add 1 to the row index to make room for the mode label
         buttons[i][j] = button
 
         # Bind the left mouse button click to the clear or mark action, depending on the mark_mode variable
         button.bind("<Button-1>", lambda event, row=i, col=j: mark(row, col) if mark_mode.get() else clear(row, col))
 
 # Configure the rows and columns to expand proportionally with the window size
-for i in range(rows):
+for i in range(rows+1):
     window.grid_rowconfigure(i, weight=1)
 for j in range(cols):
     window.grid_columnconfigure(j, weight=1)
@@ -86,8 +107,6 @@ def update_button(row, col):
         button.config(text=str(numbers[row][col]), bg="white", fg=colors[numbers[row][col]])
     else:  # empty cell
         button.config(text="", bg="white")
-
-
 
 # Function to handle clear action
 def clear(row, col):
