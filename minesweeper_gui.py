@@ -64,6 +64,11 @@ def clear(row, col):
                             numbers[i][j] += 1
 
     update_button(row, col)
+    if numbers[row][col] == 0:
+        for x in [-1, 0, 1]:
+            for y in [-1, 0, 1]:
+                if 0 <= row + x < rows and 0 <= col + y < cols and buttons[row + x][col + y]["text"] == "_":
+                    clear(row + x, col + y)
 
 # Function to handle mark action
 def mark(row, col):
