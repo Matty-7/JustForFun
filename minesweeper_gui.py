@@ -1,7 +1,6 @@
 import tkinter as tk
+from tkinter import messagebox, simpledialog, Label
 import random
-from tkinter import messagebox
-from tkinter import simpledialog
 
 # Create the main window
 window = tk.Tk()
@@ -18,10 +17,18 @@ num_mines = random.randint(int(0.20 * rows * cols), int(0.25 * rows * cols))
 minefield = [[0 for _ in range(cols)] for _ in range(rows)]
 numbers = [[0 for _ in range(cols)] for _ in range(rows)]
 
-first_click = True
-
 # Variable to keep track of whether the 'm' key is pressed
 mark_mode = tk.BooleanVar(window, False)
+
+# Create a label to show the game state
+state_label = Label(window, text="")
+state_label.grid(row=rows, column=0, columnspan=cols)
+
+first_click = True
+
+def update_state():
+    num_marked_mines = sum(button["text"] == "M" for row in buttons for button in row)
+    state_label["text"] = f"Rows: {rows}, Columns: {cols}, Mines: {num_mines}, Marked: {num_marked_mines}, Remaining: {num_mines - num_marked_mines}"
 
 def check_game_over():
     for i in range(rows):
@@ -37,8 +44,6 @@ def check_game_over():
     messagebox.showinfo("Congratulations", "You win!")
     window.quit()
 
-
-# Function to handle key press and release events
 def toggle_mark_mode(event):
     mark_mode.set(not mark_mode.get())
 
@@ -68,13 +73,10 @@ def clear(row, col):
         # Place the mines after the first move
         first_click = False
         # Make sure the first move is not a mine
-        safe_cells = list(range(rows * cols))
-        safe_cells.remove(cols * row + col)
+        safe_cells = [(x, y) for x in range(rows) for y in range(cols) if (x, y) != (i, j)]
         mines = random.sample(safe_cells, num_mines)
-        for mine in mines:
-            mine_row = mine // cols
-            mine_col = mine % cols
-            minefield[mine_row][mine_col] = 1
+        for (x, y) in mines:
+            minefield[x][y] = 1
 
         # Calculate the numbers that represent the number of mines around a cell
         for i in range(rows):
@@ -83,6 +85,19 @@ def clear(row, col):
                     for y in [-1, 0, 1]:
                         if 0 <= i + x < rows and 0 <= j + y < cols and minefield[i + x][j + y] == 1:
                             numbers[i][j] += 1
+
+        # Randomly reveal 3-8 cells around the first click
+        revealed_cells = 0
+        max_revealed_cells = random.randint(3, 8)
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                if 0 <= row + dx < rows and 0 <= col + dy < cols and (buttons[row + dx][col + dy]["text"] == "_"):
+                    clear(row + dx, col + dy)
+                    revealed_cells += 1
+                    if revealed_cells == max_revealed_cells:
+                        break
+            if revealed_cells == max_revealed_cells:
+                break
 
     # Check if the move is on a mine
     if minefield[row][col] == 1:
@@ -98,21 +113,24 @@ def clear(row, col):
                     clear(row + x, col + y)
 
     check_game_over()
-
+    update_state()
 
 # Function to handle mark action
 def mark(row, col):
     update_button(row, col)
     check_game_over()
+    update_state()
 
 def update_button(row, col):
     button = buttons[row][col]
-    if minefield[row][col] == 1:  # mine
-        button.config(text="M", bg="red")
-    elif numbers[row][col] > 0:  # number
-        button.config(text=str(numbers[row][col]), bg="white")
-    else:  # empty cell
-        button.config(text="", bg="white")
+    if button["text"] == "_":  # unmarked
+        if mark_mode.get():  # if in mark mode
+            button.config(text="M", bg="red")
+        elif minefield[row][col] == 0:  # if not mine
+            button.config(text=str(numbers[row][col]) if numbers[row][col] > 0 else "", bg="white")
+    else:  # marked
+        if mark_mode.get():  # if in mark mode
+            button.config(text="_", bg="SystemButtonFace")
 
 # Start the main event loop
 window.mainloop()
