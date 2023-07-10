@@ -27,12 +27,18 @@ window.bind('m', toggle_mark_mode)
 buttons = [[None for _ in range(cols)] for _ in range(rows)]
 for i in range(rows):
     for j in range(cols):
-        button = tk.Button(window, text="_", width=2)
-        button.grid(row=i, column=j)
+        button = tk.Button(window, text="_")
+        button.grid(row=i, column=j, sticky='nsew')  # The 'nsew' option makes the button expand to fill the grid cell
         buttons[i][j] = button
 
         # Bind the left mouse button click to the clear or mark action, depending on the mark_mode variable
         button.bind("<Button-1>", lambda event, row=i, col=j: mark(row, col) if mark_mode.get() else clear(row, col))
+
+# Configure the rows and columns to expand proportionally with the window size
+for i in range(rows):
+    window.grid_rowconfigure(i, weight=1)
+for j in range(cols):
+    window.grid_columnconfigure(j, weight=1)
 
 # Function to handle clear action
 def clear(row, col):
